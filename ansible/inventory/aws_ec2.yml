@@ -1,0 +1,28 @@
+---
+plugin: aws_ec2
+
+# Region jahan EC2 hain
+regions:
+  - ap-south-1
+
+# Sirf production tagged servers fetch karega
+filters:
+  tag:Environment: production
+  tag:Role: webserver
+  tag:Project: ansible-nginx
+  instance-state-name: running
+
+# Ansible in IPs se connect karega
+hostnames:
+  - public-ip-address
+
+# Groups banayega tags ke basis pe
+keyed_groups:
+  - key: tags.Environment
+    prefix: env
+  - key: tags.Role
+    prefix: role
+
+# Extra variables har host ke liye
+compose:
+  ansible_host: public_ip_address

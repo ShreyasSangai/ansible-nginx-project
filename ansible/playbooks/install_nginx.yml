@@ -1,0 +1,53 @@
+---
+- name: Install and Configure Nginx on Production Servers
+  hosts: all
+  become: yes        # sudo access
+  gather_facts: yes
+
+  tasks:
+
+    - name: Update all packages
+      yum:
+        name: "*"
+        state: latest
+        update_cache: yes
+
+    - name: Install Nginx
+      yum:
+        name: nginx
+        state: present
+
+    - name: Start and Enable Nginx
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Check Nginx is Running
+      systemd:
+        name: nginx
+      register: nginx_status
+
+    - name: Print Nginx Status
+      debug:
+        msg: "Nginx is {{ nginx_status.status.ActiveState }} on {{ inventory_hostname }}"
+
+    - name: Create Custom Index Page
+      copy:
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Ansible Managed Server</title>
+          </head>
+          <body>
+              <h1>Server: {{ inventory_hostname }}</h1>
+              <h2>Managed by Ansible + Jenkins</h2>
+              <p>Environment: {{ hostvars[inventory_hostname]['tags']['Environment'] }}</p>
+              <p>Role: {{ hostvars[inventory_hostname]['tags']['Role'] }}</p>
+          </body>
+          </html>
+        dest: /usr/share/nginx/html/index.html
+        owner: root
+        group: root
+        mode: '0644'
