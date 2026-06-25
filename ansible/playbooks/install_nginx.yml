@@ -14,14 +14,12 @@
 
     - name: Enable nginx via amazon-linux-extras
       command: amazon-linux-extras enable nginx1
-      args:
-        creates: /etc/yum.repos.d/amzn2-extras.repo
+
+    - name: Clean yum cache
+      command: yum clean metadata
 
     - name: Install Nginx
-      yum:
-        name: nginx
-        state: present
-        update_cache: yes
+      command: yum install nginx -y
 
     - name: Start and Enable Nginx
       systemd:
