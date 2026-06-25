@@ -1,0 +1,12 @@
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/terraform.tfvars
+terraform/*.tfplan
+*.pem
+*.ppk
+ansible/vault_pass.txt
+.DS_Store
+Thumbs.db
+.vscode/
